@@ -1,0 +1,7 @@
+{
+  "name": "Minimalist Reich",
+  "short_name": "Reich",
+  "display": "standalone",
+  "start_url": ".",
+  "icons": []
+}
