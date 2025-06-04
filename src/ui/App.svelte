@@ -5,8 +5,9 @@
   import { loadInstrument } from '../audio/instruments';
   import * as Tone from 'tone';
 
-  let scheduler: Scheduler;
+  let scheduler: Scheduler | null = null;
   let started = false;
+  let ready = false;
 
   async function init() {
     const vib = await loadInstrument('vibraphone');
@@ -22,19 +23,24 @@
       new Voice(highInst, [0,2,4,9,11], '8n'),
     ];
     scheduler = new Scheduler(voices);
+    ready = true;
   }
 
   onMount(init);
 
   function start() {
-    Tone.start();
-    scheduler.start();
-    started = true;
+    if (!scheduler) return;
+    Tone.start().then(() => {
+      scheduler!.start();
+      started = true;
+    });
   }
 </script>
 
 <main class="p-4 text-center">
-  {#if !started}
-  <button class="p-4 bg-blue-500 text-white rounded" on:click={start}>Start</button>
+  {#if !ready}
+    <p>Loading…</p>
+  {:else if !started}
+    <button class="p-4 bg-blue-500 text-white rounded" on:click={start}>Start</button>
   {/if}
 </main>
